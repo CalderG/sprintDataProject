@@ -1,0 +1,13 @@
+# Men's 100m Sprint Historical Analysis Report
+
+###### Calder Glass - calderglass@ucsb.edu
+
+## Introduction
+
+The 100 meter dash is an event in Track & Field where 8 to 10 athletes react to a starter's pistol and run 100 meters to a finish line. The version of the event with all male athletes is the 'marquee event' of Track & Field with the most viewers watching at high level competitions like the World Championships or Olympic Games. Outside of the aforementioned meets, male sprinters in the 100 meter dash run a mix of professional league, amateur, and national championship meets in order to have the chance to even reach the level of the World Championships or Olympic Games. As a result, these prior meets are significant in understanding how a given sprinter has become competitive at the world-level in the 100 meter dash. Unfortunately for the history of the event, not all performances are accredited with the same recognition by the governing body of Track & Field, World Athletics. In the present day, meet organizers have to register their meets with World Athletics in order for the performances to be recognized. When this responsibility isn't met, the athletic profiles of sprinters on World Athletics have glaring omissions for results that were otherwise legal, such as Tate Taylor's national under-20 100 meter dash record of 9.92 seconds at the 2025 UIL Texas State Track and Field Championships. World Athletics' record keeping has also struggled with past data. Results from rounds of prior national championships have failed to be recorded, such as the 1995 USATF Men's 100 Meter Dash Final, despite meet documentation of those results having taken place. This project attempted to not only look at a more comprehensive history of the event, but to use that larger breadth of data in order to forecast future sprint performances. In order to achieve both tasks, data was acquired from Tilastopaja(#references), a Track & Field statistics site, via a paid subscription. To forecast future results in the 100 meter dash, an ARIMA Time Series model will be deployed.
+
+
+# References
+
+[1] <https://www.tilastopaja.info/>
+
