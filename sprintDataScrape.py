@@ -5,14 +5,17 @@ import os
 sprintData = []
 sprintDataFrame = pd.DataFrame()
 
+
+
 # Establish results string for each year
-yearResults = [f'{i}results.json' for i in range(1948, 2026)]
+yearResults = [f'C:/Users/calde/OneDrive/Documents/sprintData/{i}results.json' for i in range(2013, 2026)]
 # Load in the given year's json file
 for each_year in yearResults:
     with open(each_year, 'r') as f:
         data = json.load(f)
         # Extract the body/results from the dictionary
-        yearlyDict = data['templates'][0]["divs"][0]["tables"][0]["body"]
+        yearlyDict = data['templates'][0]["divs"][0]["tables"][3]["body"]
+        print(each_year)
         # At each year's dictionary, remove the 'classes', listIndex', and rowNum columns from the dictionaries
         for idx in range(len(yearlyDict)):
             yearlyDict[idx].pop("classes")
@@ -30,7 +33,7 @@ for each_year in yearResults:
 sprintDataFrame = pd.concat(sprintData)
 
 # Export to CSV
-sprintDataFrame.to_csv("sprintTestFrame.csv")
+sprintDataFrame.to_csv("C:/Users/calde/OneDrive/Documents/sprintData/updated_windaided_and_handtiming.csv")
 
 
 
