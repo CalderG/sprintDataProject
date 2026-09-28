@@ -180,6 +180,10 @@ rankingData["ageDuringResult"] = (rankingData["date"] - rankingData["dateOfBirth
 
 rankingData["monthOfResult"] = rankingData["date"].dt.month
 
+# Extract day of performance for Time Series Analysis:
+
+rankingData["dayOfResult"] = rankingData["date"].dt.day
+
 # TODO: If two performances from an athlete occur on the same day, a heat should go before a quarterfinal and a semi final should go before a final
 
 rankingData_sorted = rankingData.sort_values(by = "Round", 
