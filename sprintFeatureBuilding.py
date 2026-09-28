@@ -4,7 +4,7 @@ import os
 import numpy as np
 import re
 import math
-rankingData = pd.read_csv("insert ranking data csv here", index_col=0)
+rankingData = pd.read_csv("insert ranking data here")
 
 altitudes2Add = pd.read_csv()
 
@@ -163,6 +163,9 @@ rankingData["PersonalBest_Corrected"] = rankingData.sort_values(by = ["athleteId
 # First extract the year from each performance
 
 rankingData["yearOfResult"] = rankingData["date"].dt.year
+
+# gets the year of birth for the given sprinter by taking it from the datetime conversion of their date of birth
+rankingData["yearOfBirth"] = rankingData["dateOfBirth"].dt.year
 
 # Then the same code as personal best, but with the year as an additional column to sort
 
