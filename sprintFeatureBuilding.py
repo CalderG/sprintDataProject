@@ -136,7 +136,7 @@ rankingData["date"] = pd.to_datetime(rankingData["date"])
 rankingData["dateOfBirth"] = pd.to_datetime(rankingData["dateOfBirth"])
 # Personal Best Column & Personal Best Column Time Corrected
 
-rankingData_sorted = rankingData.sort_values(by = ["athleteId", "name", "yearOfResult", "date"])
+rankingData_sorted = rankingData.sort_values(by = ["athleteId", "yearOfResult", "date"])
 # Sorts in ascending order by name and then the date of each performance, then groups by name and finds the minimum result 
 # as the dates ascend, so the minimum updates to the athlete's pb
 def season_best(x):
@@ -144,17 +144,17 @@ def season_best(x):
     return pd.Series(vals, index=x.index)
 
 rankingData_sorted["SeasonBest"] = (
-    rankingData_sorted.groupby(["athleteId", "name", "yearOfResult"], group_keys=False)
+    rankingData_sorted.groupby(["athleteId", "yearOfResult"], group_keys=False)
     .apply(season_best, include_groups=False)
 )
 
 rankingData_sorted["PersonalBest"] = (
-    rankingData_sorted.groupby(["athleteId", "name"], group_keys=False)
+    rankingData_sorted.groupby(["athleteId"], group_keys=False)
     .apply(season_best, include_groups=False)
 )
 rankingData = rankingData_sorted
 
-rankingData["PersonalBest_Corrected"] = rankingData.sort_values(by = ["athleteId", "name", "date"]).groupby(["athleteId","name"])["time-corrected"].cummin()
+rankingData["PersonalBest_Corrected"] = rankingData.sort_values(by = ["athleteId", "date"]).groupby(["athleteId"])["time-corrected"].cummin()
 
 # Season Best Column & Season Best Column Time Corrected
 # Sorts in ascending order by name, the date of each performance, and the overall year, then groups by date and finds the minimum result 
@@ -169,7 +169,7 @@ rankingData["yearOfBirth"] = rankingData["dateOfBirth"].dt.year
 
 # Then the same code as personal best, but with the year as an additional column to sort
 
-rankingData["SeasonBest_Corrected"] = rankingData.sort_values(by = ["athleteId", "name", "yearOfResult", "date"]).groupby(["athleteId", "name", "yearOfResult"])["time-corrected"].cummin()
+rankingData["SeasonBest_Corrected"] = rankingData.sort_values(by = ["athleteId", "yearOfResult", "date"]).groupby(["athleteId", "yearOfResult"])["time-corrected"].cummin()
 
 # Create a new column for age during Performance - difference between dateOfBirth and date
 
@@ -218,8 +218,8 @@ rankingData_sorted = rankingData.sort_values(by = "Round",
 # Reset indexes in order to group by properly
 
 rankingData = rankingData.reset_index(drop = True)
-rankingData["PersonalBest_Corrected"] = rankingData.sort_values(by = ["athleteId", "name", "date"]).groupby(["athleteId","name"])["time-corrected"].cummin()
-rankingData["SeasonBest_Corrected"] = rankingData.sort_values(by = ["athleteId","name", "yearOfResult", "date"]).groupby(["athleteId", "name", "yearOfResult"])["time-corrected"].cummin()
+rankingData["PersonalBest_Corrected"] = rankingData.sort_values(by = ["athleteId", "date"]).groupby(["athleteId"])["time-corrected"].cummin()
+rankingData["SeasonBest_Corrected"] = rankingData.sort_values(by = ["athleteId", "yearOfResult", "date"]).groupby(["athleteId", "yearOfResult"])["time-corrected"].cummin()
 
 # Previous Placement Column - takes the placement from a previous race for each athlete
 rankingData["PreviousPlacement"] = previous_placement(rankingData)
@@ -232,12 +232,14 @@ rankingData["PerformanceMovingAverage"] = performance_average(rankingData, 1)
 # Performance Average (Time-Corrected) - average of last 3 time-corrected results per athlete (per year) or fewer results for earlier in the season
 rankingData["PerformanceMovingAverage_Time-Corrected"] = performance_average(rankingData, 2)
 # Placement Average - average of last 3 (or fewer if lack of data) placements in races
-rankingData["PlacementAverage"] = rankingData.groupby(["athleteId", 'date'], sort=False)["PreviousPlacement"].rolling(WINDOW, min_periods=1).mean().droplevel([0, 1]).sort_index().to_numpy()
+rankingData["PlacementAverage"] = rankingData.sort_values(by=["athleteId", "date"]).groupby("athleteId")["PreviousPlacement"].rolling(WINDOW, min_periods=1).mean().reset_index(level=0, drop=True)
+# .droplevel([0, 1]).sort_index().to_numpy()
+
 # Sub-10 Rate (Time-Corrected & Regular Legal) - gpt5-mini-assisted
 # First sorts by id, name, and date, then creates a new column based on both statements being true and converts to integer (1,0)
 # Then does the groupby and expands on the boolean column in order to get the rates
 # Create indicator for wind-legal sub-10 performances and compute expanding mean per athlete-season
-rankingData = rankingData.sort_values(by=["athleteId", "name", "date"])  # ensure chronological order per athlete
+rankingData = rankingData.sort_values(by=["athleteId", "date"])  # ensure chronological order per athlete
 rankingData["is_sub10_windlegal"] = ((rankingData["result"] < 10) & (rankingData["wind"] <= 2.0)).astype(int)
 given_athlete = rankingData.groupby("athleteId")["is_sub10_windlegal"]
 rankingData["Sub10Rate-Regular"] = given_athlete.cumsum() / (given_athlete.cumcount() + 1)
